@@ -1,10 +1,9 @@
-#![allow(non_snake_case)]
-// use rand::Rng;
-use serde::ser::SerializeSeq;
-use serde::{Deserialize, Serialize};
-use std::error::Error;
-use std::fmt;
-use std::ops;
+pub mod __private {
+    pub use serde;
+    pub use serde::ser::SerializeSeq;
+    pub use core;
+    pub use std;
+}
 
 #[macro_export]
 macro_rules! count {
@@ -25,18 +24,19 @@ macro_rules! multiselect {
     ) => {
         $(#[$outer])*
          // Don't need to explicitly implement deserialize for some reason
-        #[derive(PartialEq, Eq, Deserialize, Copy, Clone)]
+        #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone)]
         $vis struct $MultiSelect {
             $(
                 $inner_vis $Flag : u8,
             )*
         }
 
-        impl Serialize for $MultiSelect {
+        impl $crate::__private::serde::Serialize for $MultiSelect {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                S: serde::Serializer,
+                S: $crate::__private::serde::Serializer,
             {
+                use $crate::__private::SerializeSeq;
                 let mut seq = serializer.serialize_seq(Some(count!($($Flag)*)))?;
                 $(
                     seq.serialize_element(&self.$Flag)?;
@@ -45,8 +45,8 @@ macro_rules! multiselect {
             }
         }
 
-        impl fmt::Display for $MultiSelect {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        impl $crate::__private::std::fmt::Display for $MultiSelect {
+            fn fmt(&self, f: &mut $crate::__private::std::fmt::Formatter<'_>) -> $crate::__private::std::fmt::Result {
                 let mut v: Vec<String> = Vec::new();
                 $(
                     if self.contains(&$MultiSelect::$Flag) {
@@ -57,7 +57,7 @@ macro_rules! multiselect {
             }
         }
 
-        impl ops::Add<$MultiSelect> for $MultiSelect {
+        impl $crate::__private::std::ops::Add<$MultiSelect> for $MultiSelect {
             type Output = $MultiSelect;
             fn add(self, rhs: $MultiSelect) -> $MultiSelect {
                 $MultiSelect {
@@ -68,7 +68,7 @@ macro_rules! multiselect {
             }
         }
 
-        impl ops::Mul<u8> for $MultiSelect {
+        impl $crate::__private::std::ops::Mul<u8> for $MultiSelect {
             type Output = $MultiSelect;
             fn mul(self, rhs: u8) -> Self::Output {
                 $MultiSelect {

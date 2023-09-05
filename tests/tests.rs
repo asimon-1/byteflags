@@ -1,9 +1,4 @@
-use serde::ser::SerializeSeq;
-use serde::{Deserialize, Serialize};
-use std::error::Error;
-use std::fmt;
-use std::ops;
-
+#![allow(non_snake_case)]
 use byteflags::*;
 
 multiselect! {
@@ -23,7 +18,7 @@ multiselect! {
 // }
 
 #[test]
-fn test_multiselect_serialize() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_serialize() -> Result<(), String> {
     let a = serde_json::to_string(&TestMultiSelect {
         TEST_A: 7,
         TEST_B: 7,
@@ -37,7 +32,7 @@ fn test_multiselect_serialize() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_deserialize() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_deserialize() -> Result<(), String> {
     let a = serde_json::from_str::<TestMultiSelect>("[5,3,3,1]").unwrap();
     let b = TestMultiSelect {
         TEST_A: 5,
@@ -50,7 +45,7 @@ fn test_multiselect_deserialize() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_const() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_const() -> Result<(), String> {
     let a = TestMultiSelect::TEST_C;
     let b = TestMultiSelect {
         TEST_A: 0,
@@ -63,7 +58,7 @@ fn test_multiselect_const() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_addition() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_addition() -> Result<(), String> {
     let a = TestMultiSelect::TEST_A
         + TestMultiSelect::TEST_B
         + TestMultiSelect::TEST_B
@@ -80,7 +75,7 @@ fn test_multiselect_addition() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_multiplication() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_multiplication() -> Result<(), String> {
     let a = TestMultiSelect::TEST_C
         + TestMultiSelect::TEST_C
         + TestMultiSelect::TEST_D
@@ -98,7 +93,7 @@ fn test_multiselect_multiplication() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_contains() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_contains() -> Result<(), String> {
     let abcd = serde_json::from_str::<TestMultiSelect>("[1,2,0,0]").unwrap();
     let a = TestMultiSelect::TEST_A;
     let b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_A;
@@ -114,7 +109,7 @@ fn test_multiselect_contains() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_display() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_display() -> Result<(), String> {
     let a = format!("{}", TestMultiSelect::TEST_A);
     let b = "Test A";
     assert_eq!(a, b);
@@ -128,7 +123,7 @@ fn test_multiselect_display() -> Result<(), Box<dyn Error>> {
 }
 
 #[test]
-fn test_multiselect_match() -> Result<(), Box<dyn Error>> {
+fn test_multiselect_match() -> Result<(), String> {
     let a = TestMultiSelect::TEST_D;
     assert!(match a {
         TestMultiSelect::TEST_A => false,
