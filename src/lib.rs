@@ -23,7 +23,7 @@ pub fn get_random_int(max: usize) -> usize {
 macro_rules! byteflags {
     (
         $(#[$outer:meta])*
-        $vis:vis struct $Byteflags:ident {
+        $vis:vis struct $ByteFlags:ident {
             $(
                 $inner_vis:vis $Flag:ident -> $Name:literal,
             )*
@@ -32,13 +32,13 @@ macro_rules! byteflags {
         $(#[$outer])*
          // Don't need to explicitly implement deserialize for some reason
         #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone)]
-        $vis struct $Byteflags {
+        $vis struct $ByteFlags {
             $(
                 $inner_vis $Flag : u8,
             )*
         }
 
-        impl $crate::__private::serde::Serialize for $Byteflags {
+        impl $crate::__private::serde::Serialize for $ByteFlags {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: $crate::__private::serde::Serializer,
@@ -52,11 +52,11 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::fmt::Display for $Byteflags {
+        impl $crate::__private::std::fmt::Display for $ByteFlags {
             fn fmt(&self, f: &mut $crate::__private::std::fmt::Formatter<'_>) -> $crate::__private::std::fmt::Result {
                 let mut v: Vec<String> = Vec::new();
                 $(
-                    if self.contains(&$Byteflags::$Flag) {
+                    if self.contains(&$ByteFlags::$Flag) {
                         v.push($Name.to_string());
                     }
                 )*
@@ -64,10 +64,10 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::Add<$Byteflags> for $Byteflags {
-            type Output = $Byteflags;
-            fn add(self, rhs: $Byteflags) -> $Byteflags {
-                $Byteflags {
+        impl $crate::__private::std::ops::Add<$ByteFlags> for $ByteFlags {
+            type Output = $ByteFlags;
+            fn add(self, rhs: $ByteFlags) -> $ByteFlags {
+                $ByteFlags {
                     $(
                         $Flag: self.$Flag.checked_add(rhs.$Flag).unwrap_or(u8::MAX),
                     )*
@@ -75,16 +75,16 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::AddAssign<$Byteflags> for $Byteflags {
-            fn add_assign(&mut self, rhs: $Byteflags) {
+        impl $crate::__private::std::ops::AddAssign<$ByteFlags> for $ByteFlags {
+            fn add_assign(&mut self, rhs: $ByteFlags) {
                 *self = *self + rhs;
             }
         }
 
-        impl $crate::__private::std::ops::Sub<$Byteflags> for $Byteflags {
-            type Output = $Byteflags;
-            fn sub(self, rhs: $Byteflags) -> $Byteflags {
-                $Byteflags {
+        impl $crate::__private::std::ops::Sub<$ByteFlags> for $ByteFlags {
+            type Output = $ByteFlags;
+            fn sub(self, rhs: $ByteFlags) -> $ByteFlags {
+                $ByteFlags {
                     $(
                         $Flag: self.$Flag.checked_sub(rhs.$Flag).unwrap_or(u8::MIN),
                     )*
@@ -92,31 +92,31 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::SubAssign<$Byteflags> for $Byteflags {
-            fn sub_assign(&mut self, rhs: $Byteflags) {
+        impl $crate::__private::std::ops::SubAssign<$ByteFlags> for $ByteFlags {
+            fn sub_assign(&mut self, rhs: $ByteFlags) {
                 *self = *self - rhs;
             }
         }
 
 
-        impl $crate::__private::std::ops::Mul<u8> for $Byteflags {
-            type Output = $Byteflags;
+        impl $crate::__private::std::ops::Mul<u8> for $ByteFlags {
+            type Output = $ByteFlags;
             fn mul(self, rhs: u8) -> Self::Output {
-                $Byteflags {
+                $ByteFlags {
                     $($Flag: self.$Flag.checked_mul(rhs).unwrap_or(u8::MAX),)*
                 }
             }
         }
 
-        impl $crate::__private::std::ops::MulAssign<u8> for $Byteflags {
+        impl $crate::__private::std::ops::MulAssign<u8> for $ByteFlags {
             fn mul_assign(&mut self, rhs: u8) {
                 *self = *self * rhs;
             }
         }
 
-        impl $Byteflags {
-            const fn new() -> $Byteflags {
-                $Byteflags {
+        impl $ByteFlags {
+            const fn new() -> $ByteFlags {
+                $ByteFlags {
                     $(
                         $Flag: 0,
                     )*
@@ -125,10 +125,10 @@ macro_rules! byteflags {
 
             $(
                 // Create enum-like associated consts
-                // e.g. MyByteflags::OPTION_A
-                const $Flag: $Byteflags = $Byteflags {
+                // e.g. MyByteFlags::OPTION_A
+                const $Flag: $ByteFlags = $ByteFlags {
                     $Flag: 1,
-                    ..$Byteflags::new()
+                    ..$ByteFlags::new()
                 };
             )*
 
@@ -138,7 +138,7 @@ macro_rules! byteflags {
                 vec
             }
 
-            fn contains(&self, other: &$Byteflags) -> bool {
+            fn contains(&self, other: &$ByteFlags) -> bool {
                 // Only cares about zero / nonzero values.
                 [
                     $(
@@ -149,19 +149,19 @@ macro_rules! byteflags {
             }
 
             #[cfg(feature = "rand")]
-            fn get_random(&self) -> $Byteflags {
-                let mut v: Vec<$Byteflags> = Vec::new();
-                if self == &$Byteflags::new() {
-                    return $Byteflags::new();
+            fn get_random(&self) -> $ByteFlags {
+                let mut v: Vec<$ByteFlags> = Vec::new();
+                if self == &$ByteFlags::new() {
+                    return $ByteFlags::new();
                 }
                 $(
                     for _ in 0..self.$Flag {
-                        v.push($Byteflags::$Flag)
+                        v.push($ByteFlags::$Flag)
                     }
                 )*
                 if v.len() > 0 {
                     v[$crate::get_random_int(v.len())]
-                } else { $Byteflags::new() }
+                } else { $ByteFlags::new() }
             }
         }
     }
