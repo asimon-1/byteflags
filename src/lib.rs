@@ -1,7 +1,9 @@
 pub mod __private {
+    pub use core;
+    #[cfg(feature = "rand")]
+    pub use rand;
     pub use serde;
     pub use serde::ser::SerializeSeq;
-    pub use core;
     pub use std;
 }
 
@@ -10,6 +12,11 @@ macro_rules! count {
     // From https://stackoverflow.com/a/34324856
     () => (0usize);
     ( $x:tt $($xs:tt)* ) => (1usize + count!($($xs)*));
+}
+#[cfg(feature = "rand")]
+pub fn get_random_int(max: usize) -> usize {
+    use __private::rand::Rng;
+    __private::rand::thread_rng().gen_range(0..max)
 }
 
 #[macro_export]
@@ -112,21 +119,21 @@ macro_rules! multiselect {
                 ].iter().all(|x| *x)
             }
 
-            // TODO!(Figure out how to make this compatible with smash feature branch)
-            // fn get_random(&self) -> $MultiSelect {
-            //     let mut v: Vec<$MultiSelect> = Vec::new();
-            //     if self == &$MultiSelect::new() {
-            //         return $MultiSelect::new();
-            //     }
-            //     $(
-            //         for _ in 0..self.$Flag {
-            //             v.push($MultiSelect::$Flag)
-            //         }
-            //     )*
-            //     if v.len() > 0 {
-            //         v[get_random_int(v.len())]
-            //     } else { $MultiSelect::new() }
-            // }
+            #[cfg(feature = "rand")]
+            fn get_random(&self) -> $MultiSelect {
+                let mut v: Vec<$MultiSelect> = Vec::new();
+                if self == &$MultiSelect::new() {
+                    return $MultiSelect::new();
+                }
+                $(
+                    for _ in 0..self.$Flag {
+                        v.push($MultiSelect::$Flag)
+                    }
+                )*
+                if v.len() > 0 {
+                    v[$crate::get_random_int(v.len())]
+                } else { $MultiSelect::new() }
+            }
         }
     }
 }

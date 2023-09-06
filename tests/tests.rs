@@ -11,12 +11,6 @@ multiselect! {
     }
 }
 
-
-// TODO!(Figure out how to make this compatible with smash feature branch)
-// fn get_random_int(max: usize) -> usize {
-//     rand::thread_rng().gen_range(0..max)
-// }
-
 #[test]
 fn test_multiselect_serialize() -> Result<(), String> {
     let a = serde_json::to_string(&TestMultiSelect {
@@ -132,5 +126,24 @@ fn test_multiselect_match() -> Result<(), String> {
         TestMultiSelect::TEST_D => true,
         _ => false,
     });
+    Ok(())
+}
+
+#[test]
+#[cfg(feature = "rand")]
+fn test_rand() -> Result<(), String> {
+    let abcd = serde_json::from_str::<TestMultiSelect>("[2,1,0,0]").unwrap();
+    let mut v: Vec<TestMultiSelect> = Vec::new();
+    for _ in 0..100 {
+        v.push(abcd.get_random());
+    }
+    assert!(v.contains(&TestMultiSelect::TEST_A));
+    assert!(v.contains(&TestMultiSelect::TEST_B));
+    assert!(!v.contains(&TestMultiSelect::TEST_C));
+    assert!(!v.contains(&TestMultiSelect::TEST_D));
+    assert!(
+        v.iter().filter(|&x| *x == TestMultiSelect::TEST_A).count()
+            > v.iter().filter(|&x| *x == TestMultiSelect::TEST_B).count()
+    );
     Ok(())
 }
