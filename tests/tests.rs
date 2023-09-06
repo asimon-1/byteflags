@@ -69,6 +69,70 @@ fn test_multiselect_addition() -> Result<(), String> {
 }
 
 #[test]
+fn test_multiselect_add_assign() -> Result<(), String> {
+    let mut a = TestMultiSelect::TEST_A;
+    let b = TestMultiSelect::TEST_B;
+    let a_b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
+    let a_bb = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B + TestMultiSelect::TEST_B;
+    a += b;
+    assert_eq!(a, a_b);
+    a += b;
+    assert_eq!(a, a_bb);
+
+    let mut x = TestMultiSelect::TEST_A * u8::MAX;
+    let y = TestMultiSelect::TEST_A;
+    let x_y = TestMultiSelect::TEST_A * u8::MAX;
+    x += y;
+    assert_eq!(x, x_y);
+    Ok(())
+}
+
+#[test]
+fn test_multiselect_subtraction() -> Result<(), String> {
+    let a = TestMultiSelect::TEST_A
+        + TestMultiSelect::TEST_B
+        + TestMultiSelect::TEST_B
+        + TestMultiSelect::TEST_B
+        + TestMultiSelect::TEST_B;
+    let b = TestMultiSelect::TEST_B;
+    let a_b = TestMultiSelect::TEST_A
+        + TestMultiSelect::TEST_B
+        + TestMultiSelect::TEST_B
+        + TestMultiSelect::TEST_B;
+    let a_bbbb = TestMultiSelect::TEST_A;
+    let a_bbbbb = TestMultiSelect::TEST_A;
+    let a_aabbbbb = TestMultiSelect::new();
+    assert_eq!(a-b, a_b);
+    assert_eq!(a-(b+b+b+b), a_bbbb);
+    assert_eq!(a-(b+b+b+b+b), a_bbbbb);
+    assert_eq!(a-(a+a+b+b+b+b+b), a_aabbbbb);
+    Ok(())
+}
+
+#[test]
+fn test_multiselect_sub_assign() -> Result<(), String> {
+    let mut a = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B + TestMultiSelect::TEST_B; 
+    let b = TestMultiSelect::TEST_B;
+    let a_b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
+    let a_bb = TestMultiSelect::TEST_A ;
+    a -= b;
+    assert_eq!(a, a_b);
+    a -= b;
+    assert_eq!(a, a_bb);
+
+    let mut x = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
+    let y = TestMultiSelect::TEST_B;
+    let z = TestMultiSelect::TEST_A;
+    let x_y = TestMultiSelect::TEST_A;
+    let x_y_z = TestMultiSelect::new();
+    x -= y;
+    assert_eq!(x, x_y);
+    x -= z;
+    assert_eq!(x, x_y_z);
+    Ok(())
+}
+
+#[test]
 fn test_multiselect_multiplication() -> Result<(), String> {
     let a = TestMultiSelect::TEST_C
         + TestMultiSelect::TEST_C
@@ -83,6 +147,31 @@ fn test_multiselect_multiplication() -> Result<(), String> {
         TEST_D: 2,
     } * 2;
     assert_eq!(a, b);
+    Ok(())
+}
+
+#[test]
+fn test_multiselect_mul_assign() -> Result<(), String> {
+    let mut a = TestMultiSelect::TEST_C
+        + TestMultiSelect::TEST_D
+        + TestMultiSelect::TEST_D;
+    let a2 = TestMultiSelect {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 2,
+        TEST_D: 4,
+    };
+    a *= 2;
+    assert_eq!(a, a2);
+    let mut b = TestMultiSelect::TEST_A * u8::MAX + TestMultiSelect::TEST_B;
+    let b2 = TestMultiSelect {
+        TEST_A: u8::MAX,
+        TEST_B: 2,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    b *= 2;
+    assert_eq!(b, b2);
     Ok(())
 }
 

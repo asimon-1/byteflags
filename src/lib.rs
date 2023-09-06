@@ -75,12 +75,42 @@ macro_rules! multiselect {
             }
         }
 
+        impl $crate::__private::std::ops::AddAssign<$MultiSelect> for $MultiSelect {
+            fn add_assign(&mut self, rhs: $MultiSelect) {
+                *self = *self + rhs;
+            }
+        }
+
+        impl $crate::__private::std::ops::Sub<$MultiSelect> for $MultiSelect {
+            type Output = $MultiSelect;
+            fn sub(self, rhs: $MultiSelect) -> $MultiSelect {
+                $MultiSelect {
+                    $(
+                        $Flag: self.$Flag.checked_sub(rhs.$Flag).unwrap_or(u8::MIN),
+                    )*
+                }
+            }
+        }
+
+        impl $crate::__private::std::ops::SubAssign<$MultiSelect> for $MultiSelect {
+            fn sub_assign(&mut self, rhs: $MultiSelect) {
+                *self = *self - rhs;
+            }
+        }
+
+
         impl $crate::__private::std::ops::Mul<u8> for $MultiSelect {
             type Output = $MultiSelect;
             fn mul(self, rhs: u8) -> Self::Output {
                 $MultiSelect {
                     $($Flag: self.$Flag.checked_mul(rhs).unwrap_or(u8::MAX),)*
                 }
+            }
+        }
+
+        impl $crate::__private::std::ops::MulAssign<u8> for $MultiSelect {
+            fn mul_assign(&mut self, rhs: u8) {
+                *self = *self * rhs;
             }
         }
 
@@ -103,7 +133,6 @@ macro_rules! multiselect {
             )*
 
             fn to_vec(&self) -> Vec<u8> {
-                // TODO!(Do we need this?)
                 let mut vec = Vec::<u8>::new();
                 $(vec.push(self.$Flag);)*
                 vec
@@ -137,4 +166,3 @@ macro_rules! multiselect {
         }
     }
 }
-
