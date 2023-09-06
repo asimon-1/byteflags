@@ -20,10 +20,10 @@ pub fn get_random_int(max: usize) -> usize {
 }
 
 #[macro_export]
-macro_rules! multiselect {
+macro_rules! byteflags {
     (
         $(#[$outer:meta])*
-        $vis:vis struct $MultiSelect:ident {
+        $vis:vis struct $Byteflags:ident {
             $(
                 $inner_vis:vis $Flag:ident -> $Name:literal,
             )*
@@ -32,13 +32,13 @@ macro_rules! multiselect {
         $(#[$outer])*
          // Don't need to explicitly implement deserialize for some reason
         #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone)]
-        $vis struct $MultiSelect {
+        $vis struct $Byteflags {
             $(
                 $inner_vis $Flag : u8,
             )*
         }
 
-        impl $crate::__private::serde::Serialize for $MultiSelect {
+        impl $crate::__private::serde::Serialize for $Byteflags {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: $crate::__private::serde::Serializer,
@@ -52,11 +52,11 @@ macro_rules! multiselect {
             }
         }
 
-        impl $crate::__private::std::fmt::Display for $MultiSelect {
+        impl $crate::__private::std::fmt::Display for $Byteflags {
             fn fmt(&self, f: &mut $crate::__private::std::fmt::Formatter<'_>) -> $crate::__private::std::fmt::Result {
                 let mut v: Vec<String> = Vec::new();
                 $(
-                    if self.contains(&$MultiSelect::$Flag) {
+                    if self.contains(&$Byteflags::$Flag) {
                         v.push($Name.to_string());
                     }
                 )*
@@ -64,10 +64,10 @@ macro_rules! multiselect {
             }
         }
 
-        impl $crate::__private::std::ops::Add<$MultiSelect> for $MultiSelect {
-            type Output = $MultiSelect;
-            fn add(self, rhs: $MultiSelect) -> $MultiSelect {
-                $MultiSelect {
+        impl $crate::__private::std::ops::Add<$Byteflags> for $Byteflags {
+            type Output = $Byteflags;
+            fn add(self, rhs: $Byteflags) -> $Byteflags {
+                $Byteflags {
                     $(
                         $Flag: self.$Flag.checked_add(rhs.$Flag).unwrap_or(u8::MAX),
                     )*
@@ -75,16 +75,16 @@ macro_rules! multiselect {
             }
         }
 
-        impl $crate::__private::std::ops::AddAssign<$MultiSelect> for $MultiSelect {
-            fn add_assign(&mut self, rhs: $MultiSelect) {
+        impl $crate::__private::std::ops::AddAssign<$Byteflags> for $Byteflags {
+            fn add_assign(&mut self, rhs: $Byteflags) {
                 *self = *self + rhs;
             }
         }
 
-        impl $crate::__private::std::ops::Sub<$MultiSelect> for $MultiSelect {
-            type Output = $MultiSelect;
-            fn sub(self, rhs: $MultiSelect) -> $MultiSelect {
-                $MultiSelect {
+        impl $crate::__private::std::ops::Sub<$Byteflags> for $Byteflags {
+            type Output = $Byteflags;
+            fn sub(self, rhs: $Byteflags) -> $Byteflags {
+                $Byteflags {
                     $(
                         $Flag: self.$Flag.checked_sub(rhs.$Flag).unwrap_or(u8::MIN),
                     )*
@@ -92,31 +92,31 @@ macro_rules! multiselect {
             }
         }
 
-        impl $crate::__private::std::ops::SubAssign<$MultiSelect> for $MultiSelect {
-            fn sub_assign(&mut self, rhs: $MultiSelect) {
+        impl $crate::__private::std::ops::SubAssign<$Byteflags> for $Byteflags {
+            fn sub_assign(&mut self, rhs: $Byteflags) {
                 *self = *self - rhs;
             }
         }
 
 
-        impl $crate::__private::std::ops::Mul<u8> for $MultiSelect {
-            type Output = $MultiSelect;
+        impl $crate::__private::std::ops::Mul<u8> for $Byteflags {
+            type Output = $Byteflags;
             fn mul(self, rhs: u8) -> Self::Output {
-                $MultiSelect {
+                $Byteflags {
                     $($Flag: self.$Flag.checked_mul(rhs).unwrap_or(u8::MAX),)*
                 }
             }
         }
 
-        impl $crate::__private::std::ops::MulAssign<u8> for $MultiSelect {
+        impl $crate::__private::std::ops::MulAssign<u8> for $Byteflags {
             fn mul_assign(&mut self, rhs: u8) {
                 *self = *self * rhs;
             }
         }
 
-        impl $MultiSelect {
-            const fn new() -> $MultiSelect {
-                $MultiSelect {
+        impl $Byteflags {
+            const fn new() -> $Byteflags {
+                $Byteflags {
                     $(
                         $Flag: 0,
                     )*
@@ -125,10 +125,10 @@ macro_rules! multiselect {
 
             $(
                 // Create enum-like associated consts
-                // e.g. MyMultiSelect::OPTION_A
-                const $Flag: $MultiSelect = $MultiSelect {
+                // e.g. MyByteflags::OPTION_A
+                const $Flag: $Byteflags = $Byteflags {
                     $Flag: 1,
-                    ..$MultiSelect::new()
+                    ..$Byteflags::new()
                 };
             )*
 
@@ -138,7 +138,7 @@ macro_rules! multiselect {
                 vec
             }
 
-            fn contains(&self, other: &$MultiSelect) -> bool {
+            fn contains(&self, other: &$Byteflags) -> bool {
                 // Only cares about zero / nonzero values.
                 [
                     $(
@@ -149,19 +149,19 @@ macro_rules! multiselect {
             }
 
             #[cfg(feature = "rand")]
-            fn get_random(&self) -> $MultiSelect {
-                let mut v: Vec<$MultiSelect> = Vec::new();
-                if self == &$MultiSelect::new() {
-                    return $MultiSelect::new();
+            fn get_random(&self) -> $Byteflags {
+                let mut v: Vec<$Byteflags> = Vec::new();
+                if self == &$Byteflags::new() {
+                    return $Byteflags::new();
                 }
                 $(
                     for _ in 0..self.$Flag {
-                        v.push($MultiSelect::$Flag)
+                        v.push($Byteflags::$Flag)
                     }
                 )*
                 if v.len() > 0 {
                     v[$crate::get_random_int(v.len())]
-                } else { $MultiSelect::new() }
+                } else { $Byteflags::new() }
             }
         }
     }

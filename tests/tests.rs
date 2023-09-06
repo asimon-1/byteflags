@@ -1,9 +1,9 @@
 #![allow(non_snake_case)]
 use byteflags::*;
 
-multiselect! {
+byteflags! {
     #[derive(Debug)]
-    struct TestMultiSelect {
+    struct TestByteflags {
         TEST_A -> "Test A",
         TEST_B -> "Test B",
         TEST_C -> "Test C",
@@ -12,8 +12,8 @@ multiselect! {
 }
 
 #[test]
-fn test_multiselect_serialize() -> Result<(), String> {
-    let a = serde_json::to_string(&TestMultiSelect {
+fn test_byteflags_serialize() -> Result<(), String> {
+    let a = serde_json::to_string(&TestByteflags {
         TEST_A: 7,
         TEST_B: 7,
         TEST_C: 2,
@@ -26,9 +26,9 @@ fn test_multiselect_serialize() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_deserialize() -> Result<(), String> {
-    let a = serde_json::from_str::<TestMultiSelect>("[5,3,3,1]").unwrap();
-    let b = TestMultiSelect {
+fn test_byteflags_deserialize() -> Result<(), String> {
+    let a = serde_json::from_str::<TestByteflags>("[5,3,3,1]").unwrap();
+    let b = TestByteflags {
         TEST_A: 5,
         TEST_B: 3,
         TEST_C: 3,
@@ -39,9 +39,9 @@ fn test_multiselect_deserialize() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_const() -> Result<(), String> {
-    let a = TestMultiSelect::TEST_C;
-    let b = TestMultiSelect {
+fn test_byteflags_const() -> Result<(), String> {
+    let a = TestByteflags::TEST_C;
+    let b = TestByteflags {
         TEST_A: 0,
         TEST_B: 0,
         TEST_C: 1,
@@ -52,13 +52,13 @@ fn test_multiselect_const() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_addition() -> Result<(), String> {
-    let a = TestMultiSelect::TEST_A
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B;
-    let b = TestMultiSelect {
+fn test_byteflags_addition() -> Result<(), String> {
+    let a = TestByteflags::TEST_A
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B;
+    let b = TestByteflags {
         TEST_A: 1,
         TEST_B: 4,
         TEST_C: 0,
@@ -69,39 +69,39 @@ fn test_multiselect_addition() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_add_assign() -> Result<(), String> {
-    let mut a = TestMultiSelect::TEST_A;
-    let b = TestMultiSelect::TEST_B;
-    let a_b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
-    let a_bb = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B + TestMultiSelect::TEST_B;
+fn test_byteflags_add_assign() -> Result<(), String> {
+    let mut a = TestByteflags::TEST_A;
+    let b = TestByteflags::TEST_B;
+    let a_b = TestByteflags::TEST_A + TestByteflags::TEST_B;
+    let a_bb = TestByteflags::TEST_A + TestByteflags::TEST_B + TestByteflags::TEST_B;
     a += b;
     assert_eq!(a, a_b);
     a += b;
     assert_eq!(a, a_bb);
 
-    let mut x = TestMultiSelect::TEST_A * u8::MAX;
-    let y = TestMultiSelect::TEST_A;
-    let x_y = TestMultiSelect::TEST_A * u8::MAX;
+    let mut x = TestByteflags::TEST_A * u8::MAX;
+    let y = TestByteflags::TEST_A;
+    let x_y = TestByteflags::TEST_A * u8::MAX;
     x += y;
     assert_eq!(x, x_y);
     Ok(())
 }
 
 #[test]
-fn test_multiselect_subtraction() -> Result<(), String> {
-    let a = TestMultiSelect::TEST_A
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B;
-    let b = TestMultiSelect::TEST_B;
-    let a_b = TestMultiSelect::TEST_A
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B
-        + TestMultiSelect::TEST_B;
-    let a_bbbb = TestMultiSelect::TEST_A;
-    let a_bbbbb = TestMultiSelect::TEST_A;
-    let a_aabbbbb = TestMultiSelect::new();
+fn test_byteflags_subtraction() -> Result<(), String> {
+    let a = TestByteflags::TEST_A
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B;
+    let b = TestByteflags::TEST_B;
+    let a_b = TestByteflags::TEST_A
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B
+        + TestByteflags::TEST_B;
+    let a_bbbb = TestByteflags::TEST_A;
+    let a_bbbbb = TestByteflags::TEST_A;
+    let a_aabbbbb = TestByteflags::new();
     assert_eq!(a-b, a_b);
     assert_eq!(a-(b+b+b+b), a_bbbb);
     assert_eq!(a-(b+b+b+b+b), a_bbbbb);
@@ -110,21 +110,21 @@ fn test_multiselect_subtraction() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_sub_assign() -> Result<(), String> {
-    let mut a = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B + TestMultiSelect::TEST_B; 
-    let b = TestMultiSelect::TEST_B;
-    let a_b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
-    let a_bb = TestMultiSelect::TEST_A ;
+fn test_byteflags_sub_assign() -> Result<(), String> {
+    let mut a = TestByteflags::TEST_A + TestByteflags::TEST_B + TestByteflags::TEST_B; 
+    let b = TestByteflags::TEST_B;
+    let a_b = TestByteflags::TEST_A + TestByteflags::TEST_B;
+    let a_bb = TestByteflags::TEST_A ;
     a -= b;
     assert_eq!(a, a_b);
     a -= b;
     assert_eq!(a, a_bb);
 
-    let mut x = TestMultiSelect::TEST_A + TestMultiSelect::TEST_B;
-    let y = TestMultiSelect::TEST_B;
-    let z = TestMultiSelect::TEST_A;
-    let x_y = TestMultiSelect::TEST_A;
-    let x_y_z = TestMultiSelect::new();
+    let mut x = TestByteflags::TEST_A + TestByteflags::TEST_B;
+    let y = TestByteflags::TEST_B;
+    let z = TestByteflags::TEST_A;
+    let x_y = TestByteflags::TEST_A;
+    let x_y_z = TestByteflags::new();
     x -= y;
     assert_eq!(x, x_y);
     x -= z;
@@ -133,14 +133,14 @@ fn test_multiselect_sub_assign() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_multiplication() -> Result<(), String> {
-    let a = TestMultiSelect::TEST_C
-        + TestMultiSelect::TEST_C
-        + TestMultiSelect::TEST_D
-        + TestMultiSelect::TEST_D
-        + TestMultiSelect::TEST_D
-        + TestMultiSelect::TEST_D;
-    let b = TestMultiSelect {
+fn test_byteflags_multiplication() -> Result<(), String> {
+    let a = TestByteflags::TEST_C
+        + TestByteflags::TEST_C
+        + TestByteflags::TEST_D
+        + TestByteflags::TEST_D
+        + TestByteflags::TEST_D
+        + TestByteflags::TEST_D;
+    let b = TestByteflags {
         TEST_A: 0,
         TEST_B: 0,
         TEST_C: 1,
@@ -151,11 +151,11 @@ fn test_multiselect_multiplication() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_mul_assign() -> Result<(), String> {
-    let mut a = TestMultiSelect::TEST_C
-        + TestMultiSelect::TEST_D
-        + TestMultiSelect::TEST_D;
-    let a2 = TestMultiSelect {
+fn test_byteflags_mul_assign() -> Result<(), String> {
+    let mut a = TestByteflags::TEST_C
+        + TestByteflags::TEST_D
+        + TestByteflags::TEST_D;
+    let a2 = TestByteflags {
         TEST_A: 0,
         TEST_B: 0,
         TEST_C: 2,
@@ -163,8 +163,8 @@ fn test_multiselect_mul_assign() -> Result<(), String> {
     };
     a *= 2;
     assert_eq!(a, a2);
-    let mut b = TestMultiSelect::TEST_A * u8::MAX + TestMultiSelect::TEST_B;
-    let b2 = TestMultiSelect {
+    let mut b = TestByteflags::TEST_A * u8::MAX + TestByteflags::TEST_B;
+    let b2 = TestByteflags {
         TEST_A: u8::MAX,
         TEST_B: 2,
         TEST_C: 0,
@@ -176,13 +176,13 @@ fn test_multiselect_mul_assign() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_contains() -> Result<(), String> {
-    let abcd = serde_json::from_str::<TestMultiSelect>("[1,2,0,0]").unwrap();
-    let a = TestMultiSelect::TEST_A;
-    let b = TestMultiSelect::TEST_A + TestMultiSelect::TEST_A;
-    let c = TestMultiSelect::TEST_A * 5;
-    let d = TestMultiSelect::TEST_B;
-    let e = TestMultiSelect::TEST_C;
+fn test_byteflags_contains() -> Result<(), String> {
+    let abcd = serde_json::from_str::<TestByteflags>("[1,2,0,0]").unwrap();
+    let a = TestByteflags::TEST_A;
+    let b = TestByteflags::TEST_A + TestByteflags::TEST_A;
+    let c = TestByteflags::TEST_A * 5;
+    let d = TestByteflags::TEST_B;
+    let e = TestByteflags::TEST_C;
     assert!(abcd.contains(&a));
     assert!(abcd.contains(&b));
     assert!(abcd.contains(&c));
@@ -192,13 +192,13 @@ fn test_multiselect_contains() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_display() -> Result<(), String> {
-    let a = format!("{}", TestMultiSelect::TEST_A);
+fn test_byteflags_display() -> Result<(), String> {
+    let a = format!("{}", TestByteflags::TEST_A);
     let b = "Test A";
     assert_eq!(a, b);
     let c = format!(
         "{}",
-        serde_json::from_str::<TestMultiSelect>("[0,0,1,5]").unwrap()
+        serde_json::from_str::<TestByteflags>("[0,0,1,5]").unwrap()
     );
     let d = "Test C + Test D";
     assert_eq!(c, d);
@@ -206,13 +206,13 @@ fn test_multiselect_display() -> Result<(), String> {
 }
 
 #[test]
-fn test_multiselect_match() -> Result<(), String> {
-    let a = TestMultiSelect::TEST_D;
+fn test_byteflags_match() -> Result<(), String> {
+    let a = TestByteflags::TEST_D;
     assert!(match a {
-        TestMultiSelect::TEST_A => false,
-        TestMultiSelect::TEST_B => false,
-        TestMultiSelect::TEST_C => false,
-        TestMultiSelect::TEST_D => true,
+        TestByteflags::TEST_A => false,
+        TestByteflags::TEST_B => false,
+        TestByteflags::TEST_C => false,
+        TestByteflags::TEST_D => true,
         _ => false,
     });
     Ok(())
@@ -221,18 +221,18 @@ fn test_multiselect_match() -> Result<(), String> {
 #[test]
 #[cfg(feature = "rand")]
 fn test_rand() -> Result<(), String> {
-    let abcd = serde_json::from_str::<TestMultiSelect>("[2,1,0,0]").unwrap();
-    let mut v: Vec<TestMultiSelect> = Vec::new();
+    let abcd = serde_json::from_str::<TestByteflags>("[2,1,0,0]").unwrap();
+    let mut v: Vec<TestByteflags> = Vec::new();
     for _ in 0..100 {
         v.push(abcd.get_random());
     }
-    assert!(v.contains(&TestMultiSelect::TEST_A));
-    assert!(v.contains(&TestMultiSelect::TEST_B));
-    assert!(!v.contains(&TestMultiSelect::TEST_C));
-    assert!(!v.contains(&TestMultiSelect::TEST_D));
+    assert!(v.contains(&TestByteflags::TEST_A));
+    assert!(v.contains(&TestByteflags::TEST_B));
+    assert!(!v.contains(&TestByteflags::TEST_C));
+    assert!(!v.contains(&TestByteflags::TEST_D));
     assert!(
-        v.iter().filter(|&x| *x == TestMultiSelect::TEST_A).count()
-            > v.iter().filter(|&x| *x == TestMultiSelect::TEST_B).count()
+        v.iter().filter(|&x| *x == TestByteflags::TEST_A).count()
+            > v.iter().filter(|&x| *x == TestByteflags::TEST_B).count()
     );
     Ok(())
 }
