@@ -72,16 +72,36 @@ fn test_byteflags_addition() -> Result<(), String> {
 fn test_byteflags_add_assign() -> Result<(), String> {
     let mut a = TestByteFlags::TEST_A;
     let b = TestByteFlags::TEST_B;
-    let a_b = TestByteFlags::TEST_A + TestByteFlags::TEST_B;
-    let a_bb = TestByteFlags::TEST_A + TestByteFlags::TEST_B + TestByteFlags::TEST_B;
+    let a_b = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_bb = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 2,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     a += b;
     assert_eq!(a, a_b);
     a += b;
     assert_eq!(a, a_bb);
 
-    let mut x = TestByteFlags::TEST_A * u8::MAX;
+    let mut x = TestByteFlags {
+        TEST_A: u8::MAX,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     let y = TestByteFlags::TEST_A;
-    let x_y = TestByteFlags::TEST_A * u8::MAX;
+    let x_y = TestByteFlags {
+        TEST_A: u8::MAX,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     x += y;
     assert_eq!(x, x_y);
     Ok(())
@@ -89,41 +109,104 @@ fn test_byteflags_add_assign() -> Result<(), String> {
 
 #[test]
 fn test_byteflags_subtraction() -> Result<(), String> {
-    let a = TestByteFlags::TEST_A
-        + TestByteFlags::TEST_B
-        + TestByteFlags::TEST_B
-        + TestByteFlags::TEST_B
-        + TestByteFlags::TEST_B;
-    let b = TestByteFlags::TEST_B;
-    let a_b = TestByteFlags::TEST_A
-        + TestByteFlags::TEST_B
-        + TestByteFlags::TEST_B
-        + TestByteFlags::TEST_B;
-    let a_bbbb = TestByteFlags::TEST_A;
-    let a_bbbbb = TestByteFlags::TEST_A;
-    let a_aabbbbb = TestByteFlags::new();
-    assert_eq!(a-b, a_b);
-    assert_eq!(a-(b+b+b+b), a_bbbb);
-    assert_eq!(a-(b+b+b+b+b), a_bbbbb);
-    assert_eq!(a-(a+a+b+b+b+b+b), a_aabbbbb);
+    let a = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 4,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_b = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 3,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_bbbb = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_bbbbb = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_aabbbbb = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    assert_eq!(a - b, a_b);
+    assert_eq!(a - (b + b + b + b), a_bbbb);
+    assert_eq!(a - (b + b + b + b + b), a_bbbbb);
+    assert_eq!(a - (a + a + b + b + b + b + b), a_aabbbbb);
     Ok(())
 }
 
 #[test]
 fn test_byteflags_sub_assign() -> Result<(), String> {
-    let mut a = TestByteFlags::TEST_A + TestByteFlags::TEST_B + TestByteFlags::TEST_B; 
-    let b = TestByteFlags::TEST_B;
-    let a_b = TestByteFlags::TEST_A + TestByteFlags::TEST_B;
-    let a_bb = TestByteFlags::TEST_A ;
+    let mut a = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 2,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_b = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let a_bb = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     a -= b;
     assert_eq!(a, a_b);
     a -= b;
     assert_eq!(a, a_bb);
 
-    let mut x = TestByteFlags::TEST_A + TestByteFlags::TEST_B;
-    let y = TestByteFlags::TEST_B;
-    let z = TestByteFlags::TEST_A;
-    let x_y = TestByteFlags::TEST_A;
+    let mut x = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let y = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let z = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let x_y = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     let x_y_z = TestByteFlags::new();
     x -= y;
     assert_eq!(x, x_y);
@@ -133,28 +216,80 @@ fn test_byteflags_sub_assign() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_multiplication() -> Result<(), String> {
-    let a = TestByteFlags::TEST_C
-        + TestByteFlags::TEST_C
-        + TestByteFlags::TEST_D
-        + TestByteFlags::TEST_D
-        + TestByteFlags::TEST_D
-        + TestByteFlags::TEST_D;
+fn test_byteflags_mul_u8() -> Result<(), String> {
+    let a = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 2,
+        TEST_D: 4,
+    };
     let b = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
         TEST_C: 1,
         TEST_D: 2,
-    } * 2;
-    assert_eq!(a, b);
+    };
+    assert_eq!(a, b * 2);
     Ok(())
 }
 
 #[test]
-fn test_byteflags_mul_assign() -> Result<(), String> {
-    let mut a = TestByteFlags::TEST_C
-        + TestByteFlags::TEST_D
-        + TestByteFlags::TEST_D;
+fn test_byteflags_mul_byteflags() -> Result<(), String> {
+    let a = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 2,
+        TEST_D: 3,
+    };
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 10,
+        TEST_C: 3,
+        TEST_D: u8::MAX - 3,
+    };
+    let ab = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 6,
+        TEST_D: u8::MAX,
+    };
+    assert_eq!(a * b, ab);
+    Ok(())
+}
+
+#[test]
+fn test_byteflags_mul_assign_byteflags() -> Result<(), String> {
+    let mut a = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 2,
+        TEST_D: 3,
+    };
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 10,
+        TEST_C: 3,
+        TEST_D: u8::MAX - 3,
+    };
+    let ab = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 6,
+        TEST_D: u8::MAX,
+    };
+    a *= b;
+    assert_eq!(a, ab);
+    Ok(())
+}
+
+#[test]
+fn test_byteflags_mul_assign_u8() -> Result<(), String> {
+    let mut a = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 1,
+        TEST_D: 2,
+    };
     let a2 = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
@@ -163,7 +298,12 @@ fn test_byteflags_mul_assign() -> Result<(), String> {
     };
     a *= 2;
     assert_eq!(a, a2);
-    let mut b = TestByteFlags::TEST_A * u8::MAX + TestByteFlags::TEST_B;
+    let mut b = TestByteFlags {
+        TEST_A: u8::MAX,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     let b2 = TestByteFlags {
         TEST_A: u8::MAX,
         TEST_B: 2,
@@ -179,7 +319,7 @@ fn test_byteflags_mul_assign() -> Result<(), String> {
 fn test_byteflags_contains() -> Result<(), String> {
     let abcd = serde_json::from_str::<TestByteFlags>("[1,2,0,0]").unwrap();
     let a = TestByteFlags::TEST_A;
-    let b = TestByteFlags::TEST_A + TestByteFlags::TEST_A;
+    let b = TestByteFlags::TEST_A * 2;
     let c = TestByteFlags::TEST_A * 5;
     let d = TestByteFlags::TEST_B;
     let e = TestByteFlags::TEST_C;
@@ -198,7 +338,12 @@ fn test_byteflags_display() -> Result<(), String> {
     assert_eq!(a, b);
     let c = format!(
         "{}",
-        serde_json::from_str::<TestByteFlags>("[0,0,1,5]").unwrap()
+        TestByteFlags {
+            TEST_A: 0,
+            TEST_B: 0,
+            TEST_C: 1,
+            TEST_D: 5,
+        }
     );
     let d = "Test C + Test D";
     assert_eq!(c, d);
@@ -219,9 +364,28 @@ fn test_byteflags_match() -> Result<(), String> {
 }
 
 #[test]
+fn test_byteflags_new() -> Result<(), String> {
+    let a = TestByteFlags::new();
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    assert_eq!(a, b);
+    Ok(())
+}
+
+#[test]
 #[cfg(feature = "rand")]
 fn test_rand() -> Result<(), String> {
-    let abcd = serde_json::from_str::<TestByteFlags>("[2,1,0,0]").unwrap();
+    // Possible but incredibly small chance that this test could fail due to random sampling error.
+    let abcd = TestByteFlags {
+        TEST_A: 2,
+        TEST_B: 1,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
     let mut v: Vec<TestByteFlags> = Vec::new();
     for _ in 0..100 {
         v.push(abcd.get_random());

@@ -108,8 +108,23 @@ macro_rules! byteflags {
             }
         }
 
+        impl $crate::__private::std::ops::Mul<$ByteFlags> for $ByteFlags {
+            type Output = $ByteFlags;
+            fn mul(self, rhs: $ByteFlags) -> Self::Output {
+                $ByteFlags {
+                    $($Flag: self.$Flag.checked_mul(rhs.$Flag).unwrap_or(u8::MAX),)*
+                }
+            }
+        }
+
         impl $crate::__private::std::ops::MulAssign<u8> for $ByteFlags {
             fn mul_assign(&mut self, rhs: u8) {
+                *self = *self * rhs;
+            }
+        }
+
+        impl $crate::__private::std::ops::MulAssign<$ByteFlags> for $ByteFlags {
+            fn mul_assign(&mut self, rhs: $ByteFlags) {
                 *self = *self * rhs;
             }
         }
