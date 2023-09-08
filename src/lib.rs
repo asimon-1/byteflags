@@ -194,6 +194,17 @@ macro_rules! byteflags {
                 ].iter().all(|x| *x)
             }
 
+            fn union(&self, other: Self) -> Self {
+                *self + other
+            }
+
+            /// Return the values from self which are nonzero in other
+            fn left_intersection(&self, other: Self) -> Self {
+                Self {
+                    $($Flag: if self.$Flag > 0 && other.$Flag > 0 { self.$Flag } else { 0 }),*
+                }
+            }
+
             #[cfg(feature = "rand")]
             fn get_random(&self) -> Self {
                 let mut v: Vec<Self> = Vec::new();

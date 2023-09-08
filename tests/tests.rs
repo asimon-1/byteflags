@@ -12,7 +12,7 @@ byteflags! {
 }
 
 #[test]
-fn test_byteflags_serialize() -> Result<(), String> {
+fn test_serialize() -> Result<(), String> {
     let a = serde_json::to_string(&TestByteFlags {
         TEST_A: 7,
         TEST_B: 7,
@@ -26,7 +26,7 @@ fn test_byteflags_serialize() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_deserialize() -> Result<(), String> {
+fn test_deserialize() -> Result<(), String> {
     let a = serde_json::from_str::<TestByteFlags>("[5,3,3,1]").unwrap();
     let b = TestByteFlags {
         TEST_A: 5,
@@ -39,7 +39,7 @@ fn test_byteflags_deserialize() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_const() -> Result<(), String> {
+fn test_const() -> Result<(), String> {
     let a = TestByteFlags::TEST_C;
     let b = TestByteFlags {
         TEST_A: 0,
@@ -52,7 +52,7 @@ fn test_byteflags_const() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_addition() -> Result<(), String> {
+fn test_addition() -> Result<(), String> {
     let a = TestByteFlags::TEST_A
         + TestByteFlags::TEST_B
         + TestByteFlags::TEST_B
@@ -69,7 +69,7 @@ fn test_byteflags_addition() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_add_assign() -> Result<(), String> {
+fn test_add_assign() -> Result<(), String> {
     let mut a = TestByteFlags::TEST_A;
     let b = TestByteFlags::TEST_B;
     let a_b = TestByteFlags {
@@ -108,7 +108,7 @@ fn test_byteflags_add_assign() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_subtraction() -> Result<(), String> {
+fn test_subtraction() -> Result<(), String> {
     let a = TestByteFlags {
         TEST_A: 1,
         TEST_B: 4,
@@ -153,7 +153,7 @@ fn test_byteflags_subtraction() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_sub_assign() -> Result<(), String> {
+fn test_sub_assign() -> Result<(), String> {
     let mut a = TestByteFlags {
         TEST_A: 1,
         TEST_B: 2,
@@ -216,7 +216,7 @@ fn test_byteflags_sub_assign() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_mul_u8() -> Result<(), String> {
+fn test_mul_u8() -> Result<(), String> {
     let a = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
@@ -234,7 +234,7 @@ fn test_byteflags_mul_u8() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_mul_byteflags() -> Result<(), String> {
+fn test_mul_byteflags() -> Result<(), String> {
     let a = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
@@ -258,7 +258,7 @@ fn test_byteflags_mul_byteflags() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_mul_assign_byteflags() -> Result<(), String> {
+fn test_mul_assign_byteflags() -> Result<(), String> {
     let mut a = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
@@ -283,7 +283,7 @@ fn test_byteflags_mul_assign_byteflags() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_mul_assign_u8() -> Result<(), String> {
+fn test_mul_assign_u8() -> Result<(), String> {
     let mut a = TestByteFlags {
         TEST_A: 0,
         TEST_B: 0,
@@ -316,7 +316,7 @@ fn test_byteflags_mul_assign_u8() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_contains() -> Result<(), String> {
+fn test_contains() -> Result<(), String> {
     let abcd = serde_json::from_str::<TestByteFlags>("[1,2,0,0]").unwrap();
     let a = TestByteFlags::TEST_A;
     let b = TestByteFlags::TEST_A * 2;
@@ -332,7 +332,7 @@ fn test_byteflags_contains() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_display() -> Result<(), String> {
+fn test_display() -> Result<(), String> {
     let a = format!("{}", TestByteFlags::TEST_A);
     let b = "Test A";
     assert_eq!(a, b);
@@ -351,7 +351,7 @@ fn test_byteflags_display() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_match() -> Result<(), String> {
+fn test_match() -> Result<(), String> {
     let a = TestByteFlags::TEST_D;
     assert!(match a {
         TestByteFlags::TEST_A => false,
@@ -364,7 +364,50 @@ fn test_byteflags_match() -> Result<(), String> {
 }
 
 #[test]
-fn test_byteflags_new() -> Result<(), String> {
+fn test_union() -> Result<(), String> {
+    let a = TestByteFlags::TEST_A;
+    let b = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 0,
+        TEST_C: 1,
+        TEST_D: 5,
+    };
+    let ab = TestByteFlags {
+        TEST_A: 2,
+        TEST_B: 0,
+        TEST_C: 1,
+        TEST_D: 5,
+    };
+    assert_eq!(a.union(b), ab);
+    Ok(())
+}
+
+#[test]
+fn test_left_intersection() -> Result<(), String> {
+    let a = TestByteFlags {
+        TEST_A: 10,
+        TEST_B: 9,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    let b = TestByteFlags {
+        TEST_A: 8,
+        TEST_B: 0,
+        TEST_C: 7,
+        TEST_D: 0,
+    };
+    let ab = TestByteFlags {
+        TEST_A: 10,
+        TEST_B: 0,
+        TEST_C: 0,
+        TEST_D: 0,
+    };
+    assert_eq!(a.left_intersection(b), ab);
+    Ok(())
+}
+
+#[test]
+fn test_new() -> Result<(), String> {
     let a = TestByteFlags::new();
     let b = TestByteFlags {
         TEST_A: 0,
@@ -373,6 +416,20 @@ fn test_byteflags_new() -> Result<(), String> {
         TEST_D: 0,
     };
     assert_eq!(a, b);
+    Ok(())
+}
+
+#[test]
+fn test_to_vec() -> Result<(), String> {
+    let a = TestByteFlags::new();
+    let b = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 1,
+        TEST_C: 1,
+        TEST_D: 255,
+    };
+    assert_eq!(a.to_vec(), vec![0,0,0,0]);
+    assert_eq!(b.to_vec(), vec![0,1,1,255]);
     Ok(())
 }
 
