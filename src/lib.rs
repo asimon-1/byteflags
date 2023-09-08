@@ -187,7 +187,9 @@ macro_rules! byteflags {
             }
             
             /// Create an array of consts in case you need to compare by index
-            pub const ALL_FIELDS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
+            pub const ALL_CONSTS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
+            pub const ALL_NAMES: [&'static str; count!($($Flag)*)] = [$($Name,)*];
+            pub const ALL_FIELDS: [&'static str; count!($($Flag)*)] = [$(stringify!($Flag),)*];
 
             pub fn to_vec(&self) -> Vec<u8> {
                 let mut vec = Vec::<u8>::new();

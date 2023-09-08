@@ -2,7 +2,6 @@
 use byteflags::*;
 
 byteflags! {
-    #[derive(Debug)]
     struct TestByteFlags {
         TEST_A = "Test A",
         TEST_B = "Test B",
@@ -52,12 +51,24 @@ fn test_const() -> Result<(), String> {
 }
 
 #[test]
+fn test_all_consts() -> Result<(), String> {
+    assert_eq!(TestByteFlags::ALL_CONSTS.len(), 4);
+    assert_eq!(TestByteFlags::ALL_CONSTS[0], TestByteFlags::TEST_A);
+    assert_eq!(TestByteFlags::ALL_CONSTS[1], TestByteFlags::TEST_B);
+    assert_eq!(TestByteFlags::ALL_CONSTS[2], TestByteFlags::TEST_C);
+    assert_eq!(TestByteFlags::ALL_CONSTS[3], TestByteFlags::TEST_D);
+    Ok(())
+}
+
+#[test]
+fn test_all_names() -> Result<(), String> {
+    assert_eq!(TestByteFlags::ALL_NAMES, ["Test A", "Test B", "Test C", "Test D",]);
+    Ok(())
+}
+
+#[test]
 fn test_all_fields() -> Result<(), String> {
-    assert_eq!(TestByteFlags::ALL_FIELDS.len(), 4);
-    assert_eq!(TestByteFlags::ALL_FIELDS[0], TestByteFlags::TEST_A);
-    assert_eq!(TestByteFlags::ALL_FIELDS[1], TestByteFlags::TEST_B);
-    assert_eq!(TestByteFlags::ALL_FIELDS[2], TestByteFlags::TEST_C);
-    assert_eq!(TestByteFlags::ALL_FIELDS[3], TestByteFlags::TEST_D);
+    assert_eq!(TestByteFlags::ALL_FIELDS, ["TEST_A", "TEST_B", "TEST_C", "TEST_D",]);
     Ok(())
 }
 
