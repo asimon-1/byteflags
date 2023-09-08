@@ -32,7 +32,7 @@ macro_rules! byteflags {
     ) => {
         $(#[$outer])*
          // Don't need to explicitly implement deserialize for some reason
-        #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone)]
+        #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone, Debug)]
         $vis struct $ByteFlags {
             $(
                 $inner_vis $Flag : u8,
