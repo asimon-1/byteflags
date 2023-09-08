@@ -1,3 +1,4 @@
+#![allow(non_snake_case, dead_code)]
 pub mod __private {
     pub use core;
     #[cfg(feature = "rand")]
