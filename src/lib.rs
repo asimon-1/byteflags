@@ -189,13 +189,13 @@ macro_rules! byteflags {
             /// Create an array of consts in case you need to compare by index
             pub const ALL_FIELDS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
 
-            fn to_vec(&self) -> Vec<u8> {
+            pub fn to_vec(&self) -> Vec<u8> {
                 let mut vec = Vec::<u8>::new();
                 $(vec.push(self.$Flag);)*
                 vec
             }
 
-            fn contains(&self, other: &Self) -> bool {
+            pub fn contains(&self, other: &Self) -> bool {
                 // Only cares about zero / nonzero values.
                 [
                     $(
@@ -206,19 +206,19 @@ macro_rules! byteflags {
             }
 
             /// Alternate syntax for a + b
-            fn union(&self, other: Self) -> Self {
+            pub fn union(&self, other: Self) -> Self {
                 *self + other
             }
 
             /// Return the values from self which are nonzero in other
-            fn left_intersection(&self, other: Self) -> Self {
+            pub fn left_intersection(&self, other: Self) -> Self {
                 Self {
                     $($Flag: if self.$Flag > 0 && other.$Flag > 0 { self.$Flag } else { 0 }),*
                 }
             }
 
             #[cfg(feature = "rand")]
-            fn get_random(&self) -> Self {
+            pub fn get_random(&self) -> Self {
                 let mut v: Vec<Self> = Vec::new();
                 if self == &Self::new() {
                     return Self::new();
