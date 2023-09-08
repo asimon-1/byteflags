@@ -177,6 +177,9 @@ macro_rules! byteflags {
                     ..Self::new()
                 };
             )*
+            
+            // Create an array of consts in case you need to compare by index
+            pub const ALL_FIELDS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
 
             fn to_vec(&self) -> Vec<u8> {
                 let mut vec = Vec::<u8>::new();
@@ -194,6 +197,7 @@ macro_rules! byteflags {
                 ].iter().all(|x| *x)
             }
 
+            /// Alternate syntax for a + b
             fn union(&self, other: Self) -> Self {
                 *self + other
             }

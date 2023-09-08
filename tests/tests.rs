@@ -52,6 +52,16 @@ fn test_const() -> Result<(), String> {
 }
 
 #[test]
+fn test_all_fields() -> Result<(), String> {
+    assert_eq!(TestByteFlags::ALL_FIELDS.len(), 4);
+    assert_eq!(TestByteFlags::ALL_FIELDS[0], TestByteFlags::TEST_A);
+    assert_eq!(TestByteFlags::ALL_FIELDS[1], TestByteFlags::TEST_B);
+    assert_eq!(TestByteFlags::ALL_FIELDS[2], TestByteFlags::TEST_C);
+    assert_eq!(TestByteFlags::ALL_FIELDS[3], TestByteFlags::TEST_D);
+    Ok(())
+}
+
+#[test]
 fn test_addition() -> Result<(), String> {
     let a = TestByteFlags::TEST_A
         + TestByteFlags::TEST_B
