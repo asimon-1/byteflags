@@ -56,7 +56,7 @@ macro_rules! byteflags {
             fn fmt(&self, f: &mut $crate::__private::std::fmt::Formatter<'_>) -> $crate::__private::std::fmt::Result {
                 let mut v: Vec<String> = Vec::new();
                 $(
-                    if self.contains(&$ByteFlags::$Flag) {
+                    if self.contains(&Self::$Flag) {
                         v.push($Name.to_string());
                     }
                 )*
@@ -64,10 +64,10 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::Add<$ByteFlags> for $ByteFlags {
-            type Output = $ByteFlags;
-            fn add(self, rhs: $ByteFlags) -> $ByteFlags {
-                $ByteFlags {
+        impl $crate::__private::std::ops::Add<Self> for $ByteFlags {
+            type Output = Self;
+            fn add(self, rhs: $ByteFlags) -> Self {
+                Self {
                     $(
                         $Flag: self.$Flag.checked_add(rhs.$Flag).unwrap_or(u8::MAX),
                     )*
@@ -75,16 +75,16 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::AddAssign<$ByteFlags> for $ByteFlags {
-            fn add_assign(&mut self, rhs: $ByteFlags) {
+        impl $crate::__private::std::ops::AddAssign<Self> for $ByteFlags {
+            fn add_assign(&mut self, rhs: Self) {
                 *self = *self + rhs;
             }
         }
 
-        impl $crate::__private::std::ops::Sub<$ByteFlags> for $ByteFlags {
-            type Output = $ByteFlags;
-            fn sub(self, rhs: $ByteFlags) -> $ByteFlags {
-                $ByteFlags {
+        impl $crate::__private::std::ops::Sub<Self> for $ByteFlags {
+            type Output = Self;
+            fn sub(self, rhs: Self) -> Self {
+                Self {
                     $(
                         $Flag: self.$Flag.checked_sub(rhs.$Flag).unwrap_or(u8::MIN),
                     )*
@@ -92,26 +92,26 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::SubAssign<$ByteFlags> for $ByteFlags {
-            fn sub_assign(&mut self, rhs: $ByteFlags) {
+        impl $crate::__private::std::ops::SubAssign<Self> for $ByteFlags {
+            fn sub_assign(&mut self, rhs: Self) {
                 *self = *self - rhs;
             }
         }
 
 
         impl $crate::__private::std::ops::Mul<u8> for $ByteFlags {
-            type Output = $ByteFlags;
+            type Output = Self;
             fn mul(self, rhs: u8) -> Self::Output {
-                $ByteFlags {
+                Self {
                     $($Flag: self.$Flag.checked_mul(rhs).unwrap_or(u8::MAX),)*
                 }
             }
         }
 
-        impl $crate::__private::std::ops::Mul<$ByteFlags> for $ByteFlags {
-            type Output = $ByteFlags;
-            fn mul(self, rhs: $ByteFlags) -> Self::Output {
-                $ByteFlags {
+        impl $crate::__private::std::ops::Mul<Self> for $ByteFlags {
+            type Output = Self;
+            fn mul(self, rhs: Self) -> Self::Output {
+                Self {
                     $($Flag: self.$Flag.checked_mul(rhs.$Flag).unwrap_or(u8::MAX),)*
                 }
             }
@@ -123,15 +123,15 @@ macro_rules! byteflags {
             }
         }
 
-        impl $crate::__private::std::ops::MulAssign<$ByteFlags> for $ByteFlags {
-            fn mul_assign(&mut self, rhs: $ByteFlags) {
+        impl $crate::__private::std::ops::MulAssign<Self> for $ByteFlags {
+            fn mul_assign(&mut self, rhs: Self) {
                 *self = *self * rhs;
             }
         }
 
         impl $ByteFlags {
-            const fn new() -> $ByteFlags {
-                $ByteFlags {
+            const fn new() -> Self {
+                Self {
                     $(
                         $Flag: 0,
                     )*
@@ -141,9 +141,9 @@ macro_rules! byteflags {
             $(
                 // Create enum-like associated consts
                 // e.g. MyByteFlags::OPTION_A
-                const $Flag: $ByteFlags = $ByteFlags {
+                const $Flag: Self = Self {
                     $Flag: 1,
-                    ..$ByteFlags::new()
+                    ..Self::new()
                 };
             )*
 
@@ -153,7 +153,7 @@ macro_rules! byteflags {
                 vec
             }
 
-            fn contains(&self, other: &$ByteFlags) -> bool {
+            fn contains(&self, other: &Self) -> bool {
                 // Only cares about zero / nonzero values.
                 [
                     $(
@@ -164,19 +164,19 @@ macro_rules! byteflags {
             }
 
             #[cfg(feature = "rand")]
-            fn get_random(&self) -> $ByteFlags {
-                let mut v: Vec<$ByteFlags> = Vec::new();
-                if self == &$ByteFlags::new() {
-                    return $ByteFlags::new();
+            fn get_random(&self) -> Self {
+                let mut v: Vec<Self> = Vec::new();
+                if self == &Self::new() {
+                    return Self::new();
                 }
                 $(
                     for _ in 0..self.$Flag {
-                        v.push($ByteFlags::$Flag)
+                        v.push(Self::$Flag)
                     }
                 )*
                 if v.len() > 0 {
                     v[$crate::get_random_int(v.len())]
-                } else { $ByteFlags::new() }
+                } else { Self::new() }
             }
         }
     }
