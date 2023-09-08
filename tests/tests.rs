@@ -4,10 +4,10 @@ use byteflags::*;
 byteflags! {
     #[derive(Debug)]
     struct TestByteFlags {
-        TEST_A -> "Test A",
-        TEST_B -> "Test B",
-        TEST_C -> "Test C",
-        TEST_D -> "Test D",
+        TEST_A = "Test A",
+        TEST_B = "Test B",
+        TEST_C = "Test C",
+        TEST_D = "Test D",
     }
 }
 

@@ -26,7 +26,7 @@ macro_rules! byteflags {
         $(#[$outer:meta])*
         $vis:vis struct $ByteFlags:ident {
             $(
-                $inner_vis:vis $Flag:ident -> $Name:literal,
+                $inner_vis:vis $Flag:ident = $Name:literal,
             )*
         }
     ) => {
@@ -178,7 +178,7 @@ macro_rules! byteflags {
                 };
             )*
             
-            // Create an array of consts in case you need to compare by index
+            /// Create an array of consts in case you need to compare by index
             pub const ALL_FIELDS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
 
             fn to_vec(&self) -> Vec<u8> {
@@ -231,8 +231,8 @@ macro_rules! byteflags {
 byteflags! {
     #[derive(Debug)]
     pub struct ExampleByteFlags {
-        pub ALPHA -> "Alpha",
-        pub BETA -> "Beta",
-        pub CHARLIE -> "Charlie",
+        pub ALPHA = "Alpha",
+        pub BETA = "Beta",
+        pub CHARLIE = "Charlie",
     }
 }
