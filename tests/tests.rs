@@ -430,6 +430,19 @@ fn test_new() -> Result<(), String> {
 }
 
 #[test]
+fn test_all() -> Result<(), String> {
+    let a = TestByteFlags::all();
+    let b = TestByteFlags {
+        TEST_A: 1,
+        TEST_B: 1,
+        TEST_C: 1,
+        TEST_D: 1,
+    };
+    assert_eq!(a, b);
+    Ok(())
+}
+
+#[test]
 fn test_to_vec() -> Result<(), String> {
     let a = TestByteFlags::new();
     let b = TestByteFlags {

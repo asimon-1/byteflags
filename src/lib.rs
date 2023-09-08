@@ -177,6 +177,14 @@ macro_rules! byteflags {
                     ..Self::new()
                 };
             )*
+
+            pub const fn all() -> Self {
+                Self {
+                    $(
+                        $Flag: 1,
+                    )*
+                }
+            }
             
             /// Create an array of consts in case you need to compare by index
             pub const ALL_FIELDS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
