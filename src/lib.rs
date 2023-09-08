@@ -69,7 +69,7 @@ macro_rules! byteflags {
             fn add(self, rhs: $ByteFlags) -> Self {
                 Self {
                     $(
-                        $Flag: self.$Flag.checked_add(rhs.$Flag).unwrap_or(u8::MAX),
+                        $Flag: self.$Flag.saturating_add(rhs.$Flag),
                     )*
                 }
             }
@@ -86,7 +86,7 @@ macro_rules! byteflags {
             fn sub(self, rhs: Self) -> Self {
                 Self {
                     $(
-                        $Flag: self.$Flag.checked_sub(rhs.$Flag).unwrap_or(u8::MIN),
+                        $Flag: self.$Flag.saturating_sub(rhs.$Flag),
                     )*
                 }
             }
@@ -103,16 +103,7 @@ macro_rules! byteflags {
             type Output = Self;
             fn mul(self, rhs: u8) -> Self::Output {
                 Self {
-                    $($Flag: self.$Flag.checked_mul(rhs).unwrap_or(u8::MAX),)*
-                }
-            }
-        }
-
-        impl $crate::__private::std::ops::Mul<Self> for $ByteFlags {
-            type Output = Self;
-            fn mul(self, rhs: Self) -> Self::Output {
-                Self {
-                    $($Flag: self.$Flag.checked_mul(rhs.$Flag).unwrap_or(u8::MAX),)*
+                    $($Flag: self.$Flag.saturating_mul(rhs),)*
                 }
             }
         }
@@ -120,6 +111,15 @@ macro_rules! byteflags {
         impl $crate::__private::std::ops::MulAssign<u8> for $ByteFlags {
             fn mul_assign(&mut self, rhs: u8) {
                 *self = *self * rhs;
+            }
+        }
+
+        impl $crate::__private::std::ops::Mul<Self> for $ByteFlags {
+            type Output = Self;
+            fn mul(self, rhs: Self) -> Self::Output {
+                Self {
+                    $($Flag: self.$Flag.saturating_mul(rhs.$Flag),)*
+                }
             }
         }
 
@@ -133,7 +133,7 @@ macro_rules! byteflags {
             type Output = Self;
             fn div(self, rhs: u8) -> Self::Output {
                 Self {
-                    $($Flag: self.$Flag.checked_div(rhs).unwrap_or(0),)*
+                    $($Flag: self.$Flag.saturating_div(rhs),)*
                 }
             }
         }
@@ -142,7 +142,7 @@ macro_rules! byteflags {
             type Output = Self;
             fn div(self, rhs: Self) -> Self::Output {
                 Self {
-                    $($Flag: self.$Flag.checked_div(rhs.$Flag).unwrap_or(0),)*
+                    $($Flag: self.$Flag.saturating_div(rhs.$Flag),)*
                 }
             }
         }
