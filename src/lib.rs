@@ -130,7 +130,7 @@ macro_rules! byteflags {
         }
 
         impl $ByteFlags {
-            const fn new() -> Self {
+            pub const fn new() -> Self {
                 Self {
                     $(
                         $Flag: 0,
@@ -141,7 +141,7 @@ macro_rules! byteflags {
             $(
                 // Create enum-like associated consts
                 // e.g. MyByteFlags::OPTION_A
-                const $Flag: Self = Self {
+                pub const $Flag: Self = Self {
                     $Flag: 1,
                     ..Self::new()
                 };
@@ -179,5 +179,14 @@ macro_rules! byteflags {
                 } else { Self::new() }
             }
         }
+    }
+}
+
+byteflags! {
+    #[derive(Debug)]
+    pub struct ExampleByteFlags {
+        pub ALPHA -> "Alpha",
+        pub BETA -> "Beta",
+        pub CHARLIE -> "Charlie",
     }
 }
