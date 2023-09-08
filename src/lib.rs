@@ -129,6 +129,36 @@ macro_rules! byteflags {
             }
         }
 
+        impl $crate::__private::std::ops::Div<u8> for $ByteFlags {
+            type Output = Self;
+            fn div(self, rhs: u8) -> Self::Output {
+                Self {
+                    $($Flag: self.$Flag.checked_div(rhs).unwrap_or(0),)*
+                }
+            }
+        }
+
+        impl $crate::__private::std::ops::Div<Self> for $ByteFlags {
+            type Output = Self;
+            fn div(self, rhs: Self) -> Self::Output {
+                Self {
+                    $($Flag: self.$Flag.checked_div(rhs.$Flag).unwrap_or(0),)*
+                }
+            }
+        }
+
+        impl $crate::__private::std::ops::DivAssign<u8> for $ByteFlags {
+            fn div_assign(&mut self, rhs: u8) {
+                *self = *self / rhs
+            }
+        }
+
+        impl $crate::__private::std::ops::DivAssign<Self> for $ByteFlags {
+            fn div_assign(&mut self, rhs: Self) {
+                *self = *self / rhs
+            }
+        }
+
         impl $ByteFlags {
             pub const fn new() -> Self {
                 Self {
