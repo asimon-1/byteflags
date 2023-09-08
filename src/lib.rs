@@ -237,7 +237,6 @@ macro_rules! byteflags {
 }
 
 byteflags! {
-    #[derive(Debug)]
     pub struct ExampleByteFlags {
         pub ALPHA = "Alpha",
         pub BETA = "Beta",
