@@ -62,13 +62,19 @@ fn test_all_consts() -> Result<(), String> {
 
 #[test]
 fn test_all_names() -> Result<(), String> {
-    assert_eq!(TestByteFlags::ALL_NAMES, ["Test A", "Test B", "Test C", "Test D",]);
+    assert_eq!(
+        TestByteFlags::ALL_NAMES,
+        ["Test A", "Test B", "Test C", "Test D",]
+    );
     Ok(())
 }
 
 #[test]
 fn test_all_fields() -> Result<(), String> {
-    assert_eq!(TestByteFlags::ALL_FIELDS, ["TEST_A", "TEST_B", "TEST_C", "TEST_D",]);
+    assert_eq!(
+        TestByteFlags::ALL_FIELDS,
+        ["TEST_A", "TEST_B", "TEST_C", "TEST_D",]
+    );
     Ok(())
 }
 
@@ -462,8 +468,8 @@ fn test_to_vec() -> Result<(), String> {
         TEST_C: 1,
         TEST_D: 255,
     };
-    assert_eq!(a.to_vec(), vec![0,0,0,0]);
-    assert_eq!(b.to_vec(), vec![0,1,1,255]);
+    assert_eq!(a.to_vec(), vec![0, 0, 0, 0]);
+    assert_eq!(b.to_vec(), vec![0, 1, 1, 255]);
     Ok(())
 }
 

@@ -169,6 +169,10 @@ macro_rules! byteflags {
                 }
             }
 
+            pub const fn empty() -> Self {
+                Self::new()
+            }
+
             $(
                 // Create enum-like associated consts
                 // e.g. MyByteFlags::OPTION_A
@@ -185,7 +189,7 @@ macro_rules! byteflags {
                     )*
                 }
             }
-            
+
             /// Create an array of consts in case you need to compare by index
             pub const ALL_CONSTS: [Self; count!($($Flag)*)] = [$(Self::$Flag,)*];
             pub const ALL_NAMES: [&'static str; count!($($Flag)*)] = [$($Name,)*];
