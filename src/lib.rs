@@ -1,7 +1,6 @@
 #![allow(non_snake_case, dead_code)]
 pub mod __private {
     pub use core;
-    #[cfg(feature = "rand")]
     pub use rand;
     pub use serde;
     pub use serde::ser::SerializeSeq;
@@ -14,7 +13,6 @@ macro_rules! count {
     () => (0usize);
     ( $x:tt $($xs:tt)* ) => (1usize + count!($($xs)*));
 }
-#[cfg(feature = "rand")]
 pub fn get_random_int(max: usize) -> usize {
     use __private::rand::Rng;
     __private::rand::thread_rng().gen_range(0..max)
@@ -223,7 +221,6 @@ macro_rules! byteflags {
                 }
             }
 
-            #[cfg(feature = "rand")]
             pub fn get_random(&self) -> Self {
                 let mut v: Vec<Self> = Vec::new();
                 if self == &Self::new() {

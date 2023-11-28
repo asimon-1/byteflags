@@ -6,9 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rand = { version = "0.8.5", optional = true }
+rand = { git = "https://github.com/rust-random/rand.git", rev = "7a1f51c37e53046f0505e0a88416e4d20d5dfa72" }
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.105"
-
-[features]
-rand = ["dep:rand"]

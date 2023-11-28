@@ -474,7 +474,6 @@ fn test_to_vec() -> Result<(), String> {
 }
 
 #[test]
-#[cfg(feature = "rand")]
 fn test_rand() -> Result<(), String> {
     // Possible but incredibly small chance that this test could fail due to random sampling error.
     let abcd = TestByteFlags {
