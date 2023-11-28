@@ -460,7 +460,7 @@ fn test_all() -> Result<(), String> {
 }
 
 #[test]
-fn test_to_vec() -> Result<(), String> {
+fn test_to_byte_vec() -> Result<(), String> {
     let a = TestByteFlags::new();
     let b = TestByteFlags {
         TEST_A: 0,
@@ -468,8 +468,24 @@ fn test_to_vec() -> Result<(), String> {
         TEST_C: 1,
         TEST_D: 255,
     };
-    assert_eq!(a.to_vec(), vec![0, 0, 0, 0]);
-    assert_eq!(b.to_vec(), vec![0, 1, 1, 255]);
+    assert_eq!(a.to_byte_vec(), vec![0, 0, 0, 0]);
+    assert_eq!(b.to_byte_vec(), vec![0, 1, 1, 255]);
+    Ok(())
+}
+
+#[test]
+fn test_to_vec() -> Result<(), String> {
+    let a = TestByteFlags::all();
+    let b = TestByteFlags::new();
+    let c = TestByteFlags {
+        TEST_A: 0,
+        TEST_B: 1,
+        TEST_C: 1,
+        TEST_D: 255,
+    };
+    assert_eq!(a.to_vec(), vec![TestByteFlags::TEST_A, TestByteFlags::TEST_B, TestByteFlags::TEST_C, TestByteFlags::TEST_D]);
+    assert_eq!(b.to_vec(), vec![]);
+    assert_eq!(c.to_vec(), vec![TestByteFlags::TEST_B, TestByteFlags::TEST_C, TestByteFlags::TEST_D]);
     Ok(())
 }
 

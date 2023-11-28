@@ -193,10 +193,18 @@ macro_rules! byteflags {
             pub const ALL_NAMES: [&'static str; count!($($Flag)*)] = [$($Name,)*];
             pub const ALL_FIELDS: [&'static str; count!($($Flag)*)] = [$(stringify!($Flag),)*];
 
-            pub fn to_vec(&self) -> Vec<u8> {
+            pub fn to_byte_vec(&self) -> Vec<u8> {
                 let mut vec = Vec::<u8>::new();
                 $(vec.push(self.$Flag);)*
                 vec
+            }
+
+            pub fn to_vec(&self) -> Vec<Self> {
+                Self::ALL_CONSTS
+                    .iter()
+                    .filter(|item| self.contains(item))
+                    .map(|item| *item)
+                    .collect()
             }
 
             pub fn contains(&self, other: &Self) -> bool {
