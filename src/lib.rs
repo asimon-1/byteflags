@@ -1,4 +1,5 @@
-#![allow(non_snake_case, dead_code)]
+#![allow(non_snake_case)]
+#![doc = include_str!("../README.md")]
 pub mod __private {
     pub use core;
     #[cfg(feature = "rand")]
@@ -32,7 +33,7 @@ macro_rules! byteflags {
     ) => {
         $(#[$outer])*
          // Don't need to explicitly implement deserialize for some reason
-        #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone, Debug)]
+        #[derive(PartialEq, Eq, $crate::__private::serde::Deserialize, Copy, Clone, Debug, PartialOrd, Ord, Hash, Default)]
         $vis struct $ByteFlags {
             $(
                 $inner_vis $Flag : u8,
@@ -173,6 +174,7 @@ macro_rules! byteflags {
                 Self::new()
             }
 
+
             $(
                 // Create enum-like associated consts
                 // e.g. MyByteFlags::OPTION_A
@@ -196,9 +198,7 @@ macro_rules! byteflags {
             pub const ALL_FIELDS: [&'static str; count!($($Flag)*)] = [$(stringify!($Flag),)*];
 
             pub fn to_vec(&self) -> Vec<u8> {
-                let mut vec = Vec::<u8>::new();
-                $(vec.push(self.$Flag);)*
-                vec
+                vec![$(self.$Flag,)*]
             }
 
             pub fn contains(&self, other: &Self) -> bool {
