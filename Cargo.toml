@@ -1,7 +1,10 @@
 [package]
 name = "byteflags"
+description: "A macro to generate bitflag-like structures with u8 flag values."
+license: "MIT"
 version = "0.1.0"
 edition = "2021"
+keywords = ["bitmask", "bitflags", "flags"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
